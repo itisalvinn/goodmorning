@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from tools import getColWidth, writeToExcel
 
 # TODO: add read me + note the data scraped is based on Finviz updates (i.e. reflects whatever is during stock market hours)
+# TODO: add more specific file naming -- perhaps time executed 
 # general setup 
 # we will target Finviz top gainers table (LHS of FINVIZ home page)
 url = "https://www.finviz.com/"
@@ -23,7 +24,11 @@ for idx, stock in enumerate(table):
     # data is available for even number elements > 0
     if idx % 2 == 0 and idx != 0:
         ticker = stock.find('a').get_text()
-        change = stock.find('span').get_text()
+        change = stock.find('span')
+        if change is None:
+            change = '0.00%'
+        else:
+            change = change.get_text()
         ticker_info = stock.find('td')
         companySearch = re.search(r'(?<=\b&gt;)(.*?)(?=\&lt)', str(ticker_info))
         company = companySearch.group(0)
