@@ -27,8 +27,8 @@ def writeToExcel(data, tblHeaders, colWidths) -> None:
     :return: none
     """
 
-    today = str(date.today())
-    fileName = today + '.xlsx'
+    today = date.today()
+    fileName = str(today) + '.xlsx'
     path = 'gains/' + fileName
 
     workbook = xlsxwriter.Workbook(path)
@@ -64,5 +64,11 @@ def writeToExcel(data, tblHeaders, colWidths) -> None:
         worksheet.set_column(i, i, colWidths[i])
 
     workbook.close()
-
-    print("File created in " + path)
+    
+    if today.weekday() < 5:
+        print("File created in " + path)
+    else:
+        backtrack = date.today().weekday() - 4
+        friday = today - timedelta(backtrack)
+        print("Using data from Friday " + str(friday))
+        print("File created in " + path)
