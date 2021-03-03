@@ -68,6 +68,6 @@ def writeToExcel(data, tblHeaders, colWidths) -> None:
     if today.weekday() > 4:
         backtrack = date.today().weekday() - 4
         friday = today - timedelta(backtrack)
-        print("Using data from Friday " + str(friday))
+        print(f"Grabbing data from Friday {str(friday)}")
     
-    print("File created in " + path)
+    print(f"File created in {path}")
