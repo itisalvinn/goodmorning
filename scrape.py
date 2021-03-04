@@ -2,7 +2,7 @@ import requests
 import re
 
 from bs4 import BeautifulSoup
-from tools import getColWidth, writeToExcel
+from tools import getColWidth, writeToExcel, reminder
 
 # TODO: add read me + note the data scraped is based on Finviz updates (i.e. reflects whatever is during stock market hours)
 # TODO: add more specific file naming -- perhaps time executed 
@@ -44,3 +44,4 @@ for idx, stock in enumerate(table):
 
 # write data to excel file
 writeToExcel(data, tblHeaders, colWidths)
+reminder()

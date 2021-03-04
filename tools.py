@@ -1,6 +1,10 @@
 import xlsxwriter
 from datetime import date, timedelta
 
+def reminder():
+    marketHours = "NASDAQ market hours : 9:30 am - 4 pm EST"
+    print(f"{marketHours}")
+
 def getColWidth(tblHeaders):
     """ 
     method to get length of each column header
@@ -28,9 +32,21 @@ def writeToExcel(data, tblHeaders, colWidths) -> None:
     """
 
     today = date.today()
-    fileName = str(today) + '.xlsx'
+    # monday = 0 ... sunday = 6 
+    weekday = today.weekday()
+
+    if weekday > 4:
+        backtrack = date.today().weekday() - 4
+        friday = today - timedelta(backtrack)
+        print("Market is closed")
+        fileName = "CLOSED-" + str(today) + '.xlsx'
+
+    else:
+        fileName = str(weekday) + "-" + str(today) + '.xlsx'
+
     path = 'gains/' + fileName
 
+    # worksheet set up
     workbook = xlsxwriter.Workbook(path)
     worksheet = workbook.add_worksheet()
     bold = workbook.add_format({'bold': 1})
@@ -64,10 +80,5 @@ def writeToExcel(data, tblHeaders, colWidths) -> None:
         worksheet.set_column(i, i, colWidths[i])
 
     workbook.close()
-    
-    if today.weekday() > 4:
-        backtrack = date.today().weekday() - 4
-        friday = today - timedelta(backtrack)
-        print(f"Grabbing data from Friday {str(friday)}")
     
     print(f"File created in {path}")
