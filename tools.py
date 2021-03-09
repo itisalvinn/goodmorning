@@ -1,8 +1,9 @@
 import xlsxwriter
-from datetime import date, timedelta
+import pandas as pd
+from datetime import date, datetime, timedelta
 
 def reminder():
-    marketHours = "NASDAQ market hours : 9:30 am - 4 pm EST"
+    marketHours = "NASDAQ market hours : Mon-Fri b/w 9:30 am - 4 pm EST"
     print(f"{marketHours}")
 
 def getColWidth(tblHeaders):
@@ -32,7 +33,7 @@ def writeToExcel(data, tblHeaders, colWidths) -> None:
     """
 
     today = date.today()
-    # monday = 0 ... sunday = 6 
+    # monday = 0 ... sunday = 6 TODO: update to use isoweekday() as it is more intuitive
     weekday = today.weekday()
 
     if weekday > 4:
@@ -42,7 +43,8 @@ def writeToExcel(data, tblHeaders, colWidths) -> None:
         fileName = "CLOSED-" + str(today) + '.xlsx'
 
     else:
-        fileName = str(weekday) + "-" + str(today) + '.xlsx'
+        # fileName = str(weekday) + "-" + str(today) + '.xlsx'
+        fileName = str(today) + '.xlsx'
 
     path = 'gains/' + fileName
 
@@ -82,3 +84,45 @@ def writeToExcel(data, tblHeaders, colWidths) -> None:
     workbook.close()
     
     print(f"File created in {path}")
+
+# perhaps contat all n spreadsheets together?
+def analytics(file, industrySet):
+    """
+    method to grab industry name and a count of how many are in each file
+
+    :return: pair of of (industry names, count)
+    """
+    data_pair = []
+    df = pd.read_excel(file, index_col=None, engine='openpyxl', usecols="A,C") # usecols
+
+    for val in df.values:
+        # print("ticker : " + val[0])
+        # print("industry : " + val[1])
+        industrySet.add(val[1])
+    
+    # use hash map with industry + count OR hash set and have count + ticker?
+
+    return data_pair
+
+# TODO: IF analytics was added -> change to filterAndAnalyze
+def fileFilter(files, days):
+    """
+    filter files up to n days
+
+    :return: array with files created within the specified time frame
+    """
+    filteredFiles = []
+    timeDiff = date.today() - timedelta(days)
+
+    for f in files:
+        if "CLOSED" in f:
+            continue
+
+        # grab date portion of file to compare
+        fileTime = datetime.strptime(f[:len(f)-5], "%Y-%m-%d").date()
+
+        # TODO: potential optimization - do analytics in here instead of appending file
+        if fileTime >= timeDiff:
+            filteredFiles.append(f)
+
+    return filteredFiles
