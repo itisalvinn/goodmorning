@@ -1,6 +1,7 @@
 import xlsxwriter
 import pandas as pd
 from datetime import date, datetime, timedelta
+from collections import Counter
 
 def reminder():
     marketHours = "NASDAQ market hours : Mon-Fri b/w 9:30 am - 4 pm EST"
@@ -85,31 +86,48 @@ def writeToExcel(data, tblHeaders, colWidths) -> None:
     
     print(f"File created in {path}")
 
-# perhaps contat all n spreadsheets together?
-def analytics(file, industrySet):
+def industryCount(dataframe):
     """
     method to grab industry name and a count of how many are in each file
 
-    :return: pair of of (industry names, count)
+    :param dataframe: dataframe holding a collection of [ticker, industry]
+    :param industrySet:
+    :return: dictionary containing {'industryName' : count}
     """
-    data_pair = []
-    df = pd.read_excel(file, index_col=None, engine='openpyxl', usecols="A,C") # usecols
+    industryDict = {}
 
-    for val in df.values:
-        # print("ticker : " + val[0])
-        # print("industry : " + val[1])
-        industrySet.add(val[1])
+    for val in dataframe.values:
+        industryDict[val[1]] = industryDict.get(val[1], 0) + 1
+
+    return industryDict
+
+def groupTickers(dataframe):
+    """
+    method to group tickers by industry
+
+    :param dataframe: dataframe holding a collection of [ticker, industry]
+    :return: dictionary containing {'industryName' : 'tickers'}
+    """
+    tickerDict = {}
+    tickerSet = set()
+
+    # get unique tickers for each industry
+    for val in dataframe.values:
+        if val[1] in tickerDict and val[0] not in tickerSet:
+            tickerDict[val[1]].append(val[0])
+        else:
+            tickerDict[val[1]] = [val[0]]
+            tickerSet.add(val[0])
     
-    # use hash map with industry + count OR hash set and have count + ticker?
+    return tickerDict
 
-    return data_pair
-
-# TODO: IF analytics was added -> change to filterAndAnalyze
 def fileFilter(files, days):
     """
     filter files up to n days
 
-    :return: array with files created within the specified time frame
+    :param files: array of excel files retrieved from /gains directory
+    :param days: number of previous days to filter for
+    :return: filtered array with files generated within the specified time frame
     """
     filteredFiles = []
     timeDiff = date.today() - timedelta(days)
@@ -121,8 +139,21 @@ def fileFilter(files, days):
         # grab date portion of file to compare
         fileTime = datetime.strptime(f[:len(f)-5], "%Y-%m-%d").date()
 
-        # TODO: potential optimization - do analytics in here instead of appending file
         if fileTime >= timeDiff:
             filteredFiles.append(f)
 
     return filteredFiles
+
+def mergeFiles(files):
+    """
+    Merges each file from files array into a DataFrame based on Ticker (col A) and Industry (col C) headers
+
+    :param files: an array of (filtered) excel files
+    :return: panda DataFrame of the concatenated files [['ticker', 'industry'], ['ticker', 'industry'], ...]
+    """
+    
+    # read ticker and industry columns into an array of dataframes
+    frames = [pd.read_excel(f, index_col=None, engine='openpyxl', usecols="A,C") for f in files]
+    combinedFiles = pd.concat(frames)
+    return combinedFiles
+    
