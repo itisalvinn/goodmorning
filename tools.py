@@ -1,7 +1,8 @@
 import xlsxwriter
 import pandas as pd
 from datetime import date, datetime, timedelta
-from collections import Counter
+
+# TODO: split up tools.py into seperate files for scraper and analytics 
 
 def reminder():
     marketHours = "NASDAQ market hours : Mon-Fri b/w 9:30 am - 4 pm EST"
@@ -62,8 +63,7 @@ def writeToExcel(data, tblHeaders, colWidths) -> None:
     worksheet.write('E1', tblHeaders[4], bold)
     worksheet.write('F1', tblHeaders[5], bold)
 
-    row = 1
-    col = 0
+    row,col = 1, 0
     
     for ticker, change, company, industry, country, marketCap in (data):
         worksheet.write_string(row, col, ticker)
@@ -124,18 +124,18 @@ def groupTickers(dataframe):
 def fileFilter(files, days):
     """
     filter files up to n days
+    note: method assumes all files in directory are of format 'some-date-time.xlsx'
 
     :param files: array of excel files retrieved from /gains directory
-    :param days: number of previous days to filter for
+    :param days: number of previous days to filter for (inclusive)
     :return: filtered array with files generated within the specified time frame
     """
     filteredFiles = []
     timeDiff = date.today() - timedelta(days)
 
     for f in files:
-        if "CLOSED" in f:
+        if 'CLOSED' in f:
             continue
-
         # grab date portion of file to compare
         fileTime = datetime.strptime(f[:len(f)-5], "%Y-%m-%d").date()
 
@@ -152,8 +152,68 @@ def mergeFiles(files):
     :return: panda DataFrame of the concatenated files [['ticker', 'industry'], ['ticker', 'industry'], ...]
     """
     
-    # read ticker and industry columns into an array of dataframes
     frames = [pd.read_excel(f, index_col=None, engine='openpyxl', usecols="A,C") for f in files]
     combinedFiles = pd.concat(frames)
     return combinedFiles
     
+def writeToExcelIndustry(indData, days) -> None:
+    """
+    method to write the frequency in which each industry appears in the past {days} into an excel file 
+    
+    :param indData: dictionary containing industries and count of each
+    :param days: number of days to analyze data over
+    :return: none
+    """
+
+    currTime = datetime.now()
+    fileName = "past-" + str(days) + "-days-" + str(currTime) + '.xlsx'
+    path = 'analytics/industries/test.xlsx' #+ fileName
+
+    # worksheet set up
+    workbook = xlsxwriter.Workbook(path) # TODO: fix issue where we use os.chdir() earlier
+    worksheet = workbook.add_worksheet()
+    bold = workbook.add_format({'bold': 1})
+
+    worksheet.write('A1', 'Industry', bold)
+    worksheet.write('B1', 'Frequency', bold)
+
+    row,col = 1, 0
+
+    for key in indData:
+        worksheet.write_string(row, col, key)
+        worksheet.write_number(row, col+1, indData[key])
+        row += 1
+
+    workbook.close()
+
+    print("industry excel thing")
+
+def writeToExcelTickers(tickerData, days) -> None:
+    """
+    method to write ticker data grouped by industry into an excel file 
+    
+    :param tickerData: dictionary containing industries and respective tickers
+    :param days: number of days to analyze data over
+    :return: none
+    """
+    
+    currTime = datetime.now()
+    fileName = "past-" + str(days) + "-days-" + str(currTime) + '.xlsx'
+    path = 'analytics/tickers/' + fileName
+
+    for key in tickerData:
+        print(key)
+        print(tickerData[key])
+    # worksheet set up
+    workbook = xlsxwriter.Workbook(path)
+    worksheet = workbook.add_worksheet()
+    bold = workbook.add_format({'bold': 1})
+
+    worksheet.write('A1', 'Industry', bold)
+    worksheet.write('B1', 'Tickers', bold)
+
+    row,col = 1, 0
+
+    workbook.close()
+
+    print("ticker excel thing")

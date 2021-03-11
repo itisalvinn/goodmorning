@@ -3,9 +3,7 @@ import re
 
 from bs4 import BeautifulSoup
 from tools import getColWidth, writeToExcel, reminder
-
-# TODO: add read me + note the data scraped is based on Finviz updates (i.e. reflects whatever is during stock market hours)
-# TODO: add more specific file naming -- perhaps time executed 
+ 
 # general setup 
 # we will target Finviz top gainers table (LHS of FINVIZ home page)
 url = "https://www.finviz.com/"
@@ -15,7 +13,7 @@ soup = BeautifulSoup(page.content, 'html.parser')
 table = soup.find('table', class_='t-home-table')
 
 data = []
-tblHeaders = ['Ticker', 'Change %', 'Industry', 'Company Name', 'Country', 'Market Cap']
+tblHeaders = ['Ticker', 'Change %', 'Industry', 'Company Name', 'Country', 'Market Cap'] # TODO: update to grab headers from site
 colWidths = getColWidth(tblHeaders)
 
 # scrape data in top gainers table
