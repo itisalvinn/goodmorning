@@ -2,7 +2,7 @@ import requests
 import re
 
 from bs4 import BeautifulSoup
-from tools import getColWidth, writeToExcel, reminder
+from scrapeUtil import getColWidth, writeToExcel, reminder
  
 # general setup 
 # we will target Finviz top gainers table (LHS of FINVIZ home page)
