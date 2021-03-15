@@ -1,15 +1,17 @@
 import xlsxwriter
 import pandas as pd
 from datetime import date, datetime, timedelta
+from functools import wraps
 
-# TODO: consider removing decorator(?)
 def industryDec(iDec):
+    @wraps(iDec)
     def indWrapper(dataframe):
         print(f"Counting high gain industries ...")
         return iDec(dataframe)
     return indWrapper
 
 def tickerDec(tDec):
+    @wraps(tDec)
     def tickerWrapper(dataframe):
         print(f"Grouping tickers ...")
         return tDec(dataframe)
@@ -72,7 +74,7 @@ def fileFilter(files, days):
 
         if fileTime >= timeDiff:
             filteredFiles.append(f)
-            
+
     return filteredFiles
 
 def mergeFiles(files):

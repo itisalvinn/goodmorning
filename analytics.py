@@ -26,4 +26,5 @@ try:
 except:
     print(f"Error: found {len(filteredFiles)} files to analyze")
 
-print("\nDone!!! :) ")
+finally:
+    print("\nDone!!! :) ")
