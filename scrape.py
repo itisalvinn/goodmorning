@@ -3,9 +3,6 @@ import re
 
 from bs4 import BeautifulSoup
 from scrapeUtil import getColWidth, writeToExcel, reminder
- 
-
-# TODO: change class structure
 
 # general setup 
 # we will target Finviz top gainers table (LHS of FINVIZ home page)

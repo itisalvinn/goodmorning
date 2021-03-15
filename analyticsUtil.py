@@ -2,6 +2,20 @@ import xlsxwriter
 import pandas as pd
 from datetime import date, datetime, timedelta
 
+# TODO: consider removing decorator(?)
+def industryDec(iDec):
+    def indWrapper(dataframe):
+        print(f"Counting high gain industries ...")
+        return iDec(dataframe)
+    return indWrapper
+
+def tickerDec(tDec):
+    def tickerWrapper(dataframe):
+        print(f"Grouping tickers ...")
+        return tDec(dataframe)
+    return tickerWrapper
+
+@industryDec
 def industryCount(dataframe):
     """
     method to grab industry name and a count of how many are in each file
@@ -17,6 +31,7 @@ def industryCount(dataframe):
 
     return industryDict
 
+@tickerDec
 def groupTickers(dataframe):
     """
     method to group tickers by industry
@@ -48,11 +63,9 @@ def fileFilter(files, days):
     """
     filteredFiles = []
     timeDiff = date.today() - timedelta(days)
-    closed = False
 
     for f in files:
         if 'CLOSED' in f:
-            closed = True
             continue
         # grab date portion of file to compare (truncate .xlsx)
         fileTime = datetime.strptime(f[:len(f)-5], "%Y-%m-%d").date()
@@ -60,8 +73,7 @@ def fileFilter(files, days):
         if fileTime >= timeDiff:
             filteredFiles.append(f)
 
-    if closed:
-        print(f"Notice: market was CLOSED on one or more days in the past {days} days\n")
+    print(f"Found {len(filteredFiles)} file(s)")
     return filteredFiles
 
 def mergeFiles(files):
@@ -133,7 +145,7 @@ def writeToExcelTickers(tickerData, days) -> None:
 
     for key in tickerData:
         worksheet.write_string(row, col, key)
-        worksheet.write_string(row, col+1, ", ".join(tickerData[key])) # TODO: fix write list thing
+        worksheet.write_string(row, col+1, ", ".join(tickerData[key]))
         row += 1
 
     workbook.close()
