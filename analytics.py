@@ -1,5 +1,8 @@
 import os
 import analyticsUtil as au
+import yfinance as yf
+
+# TODO: change class structure
 
 """
 To analyze the number of 'high gain' industries over a period (n days inclusive) 
@@ -13,12 +16,13 @@ print(f"Analyzing previous {n} days of data ...")
 filteredFiles = au.fileFilter(files, n)
 
 if filteredFiles:
+    print(f"Found {len(filteredFiles)} file(s)\n")
     # do some analysis
-    print(f"Counting high gain industries ...")
-    
     dataframe = au.mergeFiles(filteredFiles)
     os.chdir('..')
+    print(f"Counting high gain industries ...")
     indData = au.industryCount(dataframe)
+    print(f"Grouping tickers ...")
     tickerData = au.groupTickers(dataframe)
     au.writeToExcelIndustry(indData, n)
     au.writeToExcelTickers(tickerData, n)
@@ -26,4 +30,4 @@ if filteredFiles:
 else:
     print("Error: no files to analyze")
 
-print("Done!!! :) ")
+print("\nDone!!! :) ")

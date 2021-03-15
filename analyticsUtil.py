@@ -2,8 +2,6 @@ import xlsxwriter
 import pandas as pd
 from datetime import date, datetime, timedelta
 
-#TODO: update tools to cover edge case -- look at past 2 business days only and add notification to skip over market closed days (?)
-
 def industryCount(dataframe):
     """
     method to grab industry name and a count of how many are in each file
@@ -50,16 +48,20 @@ def fileFilter(files, days):
     """
     filteredFiles = []
     timeDiff = date.today() - timedelta(days)
+    closed = False
 
     for f in files:
         if 'CLOSED' in f:
+            closed = True
             continue
-        # grab date portion of file to compare
+        # grab date portion of file to compare (truncate .xlsx)
         fileTime = datetime.strptime(f[:len(f)-5], "%Y-%m-%d").date()
 
         if fileTime >= timeDiff:
             filteredFiles.append(f)
 
+    if closed:
+        print(f"Notice: market was CLOSED on one or more days in the past {days} days\n")
     return filteredFiles
 
 def mergeFiles(files):
@@ -145,8 +147,11 @@ def formatToFromHeader(worksheet, days, format):
     :param format: format for particular cell (i.e. bold etc.) 
     :return: none
     """
-    
+    currDay = str(date.today())
+    startDay = str(date.today() - timedelta(days))
     worksheet.write(0,0,'From', format)
     worksheet.write(0,1, 'To', format)
-    worksheet.write(1,0, str(date.today()))
-    worksheet.write(1,1, str(date.today() - timedelta(days)))
+    worksheet.write(1,0, startDay)
+    worksheet.write(1,1, currDay)
+    worksheet.set_column(0, 0, len(currDay)+2)
+    worksheet.set_column(0, 1, len(startDay)+2)
