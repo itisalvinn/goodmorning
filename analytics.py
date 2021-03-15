@@ -13,7 +13,8 @@ n = int(input("Period to analyze (in days) : "))
 print(f"Analyzing previous {n} days (inclusive) of data ...\n")
 filteredFiles = au.fileFilter(files, n)
 
-if filteredFiles:
+try:
+    print(f"Found {len(filteredFiles)} file(s)\n")
     dataframe = au.mergeFiles(filteredFiles)
     # need to write to excel from parent directory
     os.chdir('..')
@@ -22,7 +23,7 @@ if filteredFiles:
     au.writeToExcelIndustry(indData, n)
     au.writeToExcelTickers(tickerData, n)
     
-else:
-    print("Error: no files to analyze")
+except:
+    print(f"Error: found {len(filteredFiles)} files to analyze")
 
 print("\nDone!!! :) ")

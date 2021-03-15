@@ -72,8 +72,7 @@ def fileFilter(files, days):
 
         if fileTime >= timeDiff:
             filteredFiles.append(f)
-
-    print(f"Found {len(filteredFiles)} file(s)")
+            
     return filteredFiles
 
 def mergeFiles(files):
