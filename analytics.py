@@ -3,14 +3,14 @@ import analyticsUtil as au
 
 """
 To analyze the number of 'high gain' industries over a period (n days inclusive) 
-TODO: look into yfinance to grab tickers in question 
 """
 
 subDir = 'gains'
 files = os.listdir(os.chdir(subDir))
 n = int(input("Period to analyze (in days) : "))
 print(f"Analyzing previous {n} days (inclusive) of data ...\n")
-filteredFiles = au.fileFilter(files, n)
+# filteredFiles = au.fileFilter(files, n)
+filteredFiles = []
 
 try:
     print(f"Found {len(filteredFiles)} file(s)\n")
@@ -18,12 +18,13 @@ try:
     # need to write to excel from parent directory
     os.chdir('..')
     indData = au.industryCount(dataframe)
-    tickerData = au.groupTickers(dataframe)
+    tkrData = au.groupTickers(dataframe)
     au.writeToExcelIndustry(indData, n)
-    au.writeToExcelTickers(tickerData, n)
+    au.writeToExcelTickers(tkrData, n)
 
-except:
-    print(f"Error: found {len(filteredFiles)} files to analyze")
+except ValueError as err:
+    print(f"Yikes. Found 0 files to analyze")
+    print(err)
 
 finally:
     print("\nDone!!! :) ")

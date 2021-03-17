@@ -1,0 +1,4 @@
+xlsxwriter
+BeautifulSoup
+pandas
+yfinance==0.1.55

@@ -23,15 +23,15 @@ def industryCount(dataframe):
     method to grab industry name and a count of how many are in each file
 
     :param dataframe: dataframe holding a collection of [ticker, industry]
-    :param industrySet:
-    :return: dictionary containing {'industryName' : count}
+    :return: tuple of {('industryName', count)} sorted by count in descending order
     """
     industryDict = {}
 
     for val in dataframe.values:
         industryDict[val[1]] = industryDict.get(val[1], 0) + 1
 
-    return industryDict
+    sortedDict = sorted(industryDict.items(), key=lambda x: x[1], reverse=True)
+    return sortedDict
 
 @tickerDec
 def groupTickers(dataframe):
@@ -113,9 +113,9 @@ def writeToExcelIndustry(indData, days) -> None:
 
     row,col = 4, 0
 
-    for key in indData:
-        worksheet.write_string(row, col, key)
-        worksheet.write_number(row, col+1, indData[key])
+    for ind, cnt in indData:
+        worksheet.write_string(row, col, ind)
+        worksheet.write_number(row, col+1, cnt)
         row += 1
 
     workbook.close()
