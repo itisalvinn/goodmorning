@@ -9,8 +9,7 @@ subDir = 'gains'
 files = os.listdir(os.chdir(subDir))
 n = int(input("Period to analyze (in days) : "))
 print(f"Analyzing previous {n} days (inclusive) of data ...\n")
-# filteredFiles = au.fileFilter(files, n)
-filteredFiles = []
+filteredFiles = au.fileFilter(files, n)
 
 try:
     print(f"Found {len(filteredFiles)} file(s)\n")
