@@ -1,6 +1,5 @@
 import os
 import analyticsUtil as au
-import yfinance as yf
 
 """
 To analyze the number of 'high gain' industries over a period (n days inclusive) 
@@ -22,7 +21,7 @@ try:
     tickerData = au.groupTickers(dataframe)
     au.writeToExcelIndustry(indData, n)
     au.writeToExcelTickers(tickerData, n)
-    
+
 except:
     print(f"Error: found {len(filteredFiles)} files to analyze")
 
