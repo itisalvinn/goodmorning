@@ -1,6 +1,7 @@
 import requests
 import re
 
+#!/usr/bin/env
 from bs4 import BeautifulSoup
 from scrapeUtil import getColWidth, writeToExcel, reminder
 

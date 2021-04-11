@@ -112,7 +112,6 @@ def writeToExcelIndustry(indData, days) -> None:
     worksheet.write(3,1, 'Frequency', bold)
 
     row,col = 4, 0
-
     for ind, cnt in indData:
         worksheet.write_string(row, col, ind)
         worksheet.write_number(row, col+1, cnt)
