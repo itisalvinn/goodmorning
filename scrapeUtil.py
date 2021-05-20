@@ -22,6 +22,7 @@ def getColWidth(tblHeaders):
 
     return colWidths
 
+# TODO: add functionality to organize files with monthly folders
 def writeToExcel(data, tblHeaders, colWidths) -> None:
     """
     method to write scraped data into an excel file 
