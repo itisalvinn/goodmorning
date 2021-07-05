@@ -19,5 +19,5 @@ TODO: create requirements.txt
 ## Run scraper
 ```python3 scrape.py```
 
-## Run analytics (WIP)
+## Run analytics
 ```python3 analytics.py```
