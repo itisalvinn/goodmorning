@@ -12,7 +12,6 @@ Disclaimer: No affiliation with Finviz. Just a tool for personal use.
 
 `pip3 install yfinance==0.1.55`
 
-TODO: update code to be inline with python styling
 
 TODO: create requirements.txt
 
