@@ -16,6 +16,8 @@ TODO: update code to be inline with python styling
 
 TODO: create requirements.txt
 
+TODO: add screenshot of resultant CSV 
+
 ## Run scraper
 ```python3 scrape.py```
 

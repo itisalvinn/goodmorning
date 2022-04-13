@@ -99,7 +99,7 @@ def writeToExcelIndustry(indData, days) -> None:
     """
 
     currDay = date.today()
-    fileName = "ind-past-" + str(days) + "-days-" + str(currDay) + '.xlsx'
+    fileName = "ind-past-" + str(days) + "-days-from-" + str(currDay) + '.xlsx'
     path = 'analytics/industries/' + fileName
 
     # worksheet set up
@@ -129,7 +129,7 @@ def writeToExcelTickers(tickerData, days) -> None:
     """
     
     currDay = date.today()
-    fileName = "tkr-past-" + str(days) + "-days-" + str(currDay) + '.xlsx'
+    fileName = "tkr-past-" + str(days) + "-days-from-" + str(currDay) + '.xlsx'
     path = 'analytics/tickers/' + fileName
 
     # worksheet set up

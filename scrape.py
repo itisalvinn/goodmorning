@@ -29,9 +29,10 @@ for idx, stock in enumerate(table):
         else:
             change = change.get_text()
         ticker_info = stock.find('td')
-        companySearch = re.search(r'(?<=\b&gt;)(.*?)(?=\&lt)', str(ticker_info))
+        companySearch = re.search(r'(?<=;b&gt;)(.*?)(?=\&lt)', str(ticker_info)) #(?<=\b&gt;)(.*?)(?=\&lt)
         company = companySearch.group(0)
-        hoverSearch = re.search(r'(?<=\;br&gt;\s)(.*?)(?=\])', str(ticker_info))
+        hoverSearch = re.search(r'(?<=;/b&gt;)(.*?)(?=\&lt)', str(ticker_info)) #(?<=\;br&gt;\s)(.*?)(?=\])
+        print(hoverSearch)
         hover = hoverSearch.group(0).replace('&amp; ', '')
         hover = hover.split('|')
         data.append([ticker, change, company, hover[0], hover[1], hover[2]])
